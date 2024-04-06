@@ -1,5 +1,7 @@
 # pet-helper-admin-service
 
+[Точка входа в приложение](https://github.com/vitmvit/pet-helper-api-gateway-service)
+
 Данный микросервис предоставляет функционал для работы с пользователями от лица администратора.
 
 ## UserController (8083/api/v1/admin)
