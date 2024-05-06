@@ -13,6 +13,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private UserService userService;
     private UserConverter userConverter;
     private ObjectMapper objectMapper;
+    private static final Logger logger = LoggerFactory.getLogger(SecurityFilter.class);
 
     /**
      * Метод, выполняющий перехват запросов и проверку токена
@@ -44,6 +47,12 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain){
         try {
+            // Проверяем, является ли запрос запросом на Swagger UI
+            if (request.getRequestURI().contains("/swagger-ui") || request.getRequestURI().contains("/api/doc") || request.getRequestURI().contains("/v3/api-docs")) {
+                // Если да, пропускаем фильтр и передаем запрос дальше
+                filterChain.doFilter(request, response);
+                return;
+            }
             var token = this.recoverToken(request);
             var login = getUsername(token);
             User user = userConverter.convert(userService.findByLogin(login));

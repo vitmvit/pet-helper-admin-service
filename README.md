@@ -4,6 +4,10 @@
 
 Данный микросервис предоставляет функционал для работы с пользователями от лица администратора.
 
+## Swagger
+
+http://localhost:8083/api/doc/swagger-ui/index.html#/
+
 ## UserController (8083/api/v1/admin)
 
 Все операции подтягиваются с user-service с помощью feign-client

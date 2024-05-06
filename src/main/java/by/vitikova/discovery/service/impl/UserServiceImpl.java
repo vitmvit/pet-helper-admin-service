@@ -1,13 +1,13 @@
 package by.vitikova.discovery.service.impl;
 
 import by.vitikova.discovery.UserDto;
+import by.vitikova.discovery.auth.SignUpCreateDto;
 import by.vitikova.discovery.constant.RoleName;
-import by.vitikova.discovery.create.UserCreateDto;
 import by.vitikova.discovery.exception.*;
+import by.vitikova.discovery.feign.AuthClient;
 import by.vitikova.discovery.feign.UserClient;
 import by.vitikova.discovery.service.UserService;
 import by.vitikova.discovery.update.PasswordUpdateDto;
-import by.vitikova.discovery.update.UserUpdateDto;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserClient userClient;
+    private final AuthClient authClient;
 
     /**
      * Находит пользователя по логину.
@@ -80,14 +81,14 @@ public class UserServiceImpl implements UserService {
      * @throws NoAccessError       если у создаваемого пользователя указана роль ROLE_USER
      */
     @Override
-    public UserDto create(UserCreateDto dto) {
-        if(!dto.getPassword().equals(dto.getPasswordConfirm())){
+    public UserDto create(SignUpCreateDto dto) {
+        if (!dto.password().equals(dto.passwordConfirm())) {
             throw new InvalidJwtException(PASSWORD_ERROR);
         }
-        if (!dto.getRole().equals(RoleName.USER)) {
+        if (!dto.role().equals(RoleName.USER)) {
             try {
-                logger.info("UserService: create user with login: " + dto.getLogin());
-                return userClient.create(dto).getBody();
+                logger.info("UserService: create user with login: " + dto.login());
+                return authClient.signUp(dto).getBody();
             } catch (Exception e) {
                 logger.error("UserService: Invalid jwt exception");
                 throw new InvalidJwtException(USERNAME_IS_EXIST);
