@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static by.vitikova.discovery.constant.Constant.*;
 
@@ -80,6 +81,7 @@ public class UserServiceImpl implements UserService {
      * @throws InvalidJwtException если произошла ошибка при создании пользователя
      * @throws NoAccessError       если у создаваемого пользователя указана роль ROLE_USER
      */
+    @Transactional
     @Override
     public UserDto create(SignUpCreateDto dto) {
         if (!dto.password().equals(dto.passwordConfirm())) {
@@ -129,6 +131,7 @@ public class UserServiceImpl implements UserService {
      * @return объект с обновленными данными пользователя типа UserDto
      * @throws EntityNotFoundException если не найдена сущность
      */
+    @Transactional
     @Override
     public UserDto updatePassword(PasswordUpdateDto passwordUpdateDto) {
         try {
@@ -147,6 +150,7 @@ public class UserServiceImpl implements UserService {
      * @param token токен аутентификации
      * @throws DeleteException если удаление пользователя не удалось
      */
+    @Transactional
     @Override
     public void delete(String login, String token) {
         try {
