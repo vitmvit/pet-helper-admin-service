@@ -24,6 +24,12 @@ public interface AuthClient {
     @PostMapping("/check")
     ResponseEntity<Boolean> check(@RequestHeader("Authorization") String auth);
 
+    /**
+     * Регистрация пользователя.
+     *
+     * @param dto DTO с данными пользователя
+     * @return DTO с данными пользователя
+     */
     @PostMapping("/signUp")
     ResponseEntity<UserDto> signUp(@RequestBody @Valid SignUpCreateDto dto);
 }
