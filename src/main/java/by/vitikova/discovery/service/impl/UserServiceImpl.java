@@ -1,18 +1,19 @@
 package by.vitikova.discovery.service.impl;
 
 import by.vitikova.discovery.UserDto;
+import by.vitikova.discovery.auth.SignUpCreateDto;
 import by.vitikova.discovery.constant.RoleName;
-import by.vitikova.discovery.create.UserCreateDto;
 import by.vitikova.discovery.exception.*;
+import by.vitikova.discovery.feign.AuthClient;
 import by.vitikova.discovery.feign.UserClient;
 import by.vitikova.discovery.service.UserService;
 import by.vitikova.discovery.update.PasswordUpdateDto;
-import by.vitikova.discovery.update.UserUpdateDto;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static by.vitikova.discovery.constant.Constant.*;
 
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserClient userClient;
+    private final AuthClient authClient;
 
     /**
      * Находит пользователя по логину.
@@ -79,15 +81,16 @@ public class UserServiceImpl implements UserService {
      * @throws InvalidJwtException если произошла ошибка при создании пользователя
      * @throws NoAccessError       если у создаваемого пользователя указана роль ROLE_USER
      */
+    @Transactional
     @Override
-    public UserDto create(UserCreateDto dto) {
-        if(!dto.getPassword().equals(dto.getPasswordConfirm())){
+    public UserDto create(SignUpCreateDto dto) {
+        if (!dto.password().equals(dto.passwordConfirm())) {
             throw new InvalidJwtException(PASSWORD_ERROR);
         }
-        if (!dto.getRole().equals(RoleName.USER)) {
+        if (!dto.role().equals(RoleName.USER)) {
             try {
-                logger.info("UserService: create user with login: " + dto.getLogin());
-                return userClient.create(dto).getBody();
+                logger.info("UserService: create user with login: " + dto.login());
+                return authClient.signUp(dto).getBody();
             } catch (Exception e) {
                 logger.error("UserService: Invalid jwt exception");
                 throw new InvalidJwtException(USERNAME_IS_EXIST);
@@ -128,6 +131,7 @@ public class UserServiceImpl implements UserService {
      * @return объект с обновленными данными пользователя типа UserDto
      * @throws EntityNotFoundException если не найдена сущность
      */
+    @Transactional
     @Override
     public UserDto updatePassword(PasswordUpdateDto passwordUpdateDto) {
         try {
@@ -146,6 +150,7 @@ public class UserServiceImpl implements UserService {
      * @param token токен аутентификации
      * @throws DeleteException если удаление пользователя не удалось
      */
+    @Transactional
     @Override
     public void delete(String login, String token) {
         try {

@@ -4,7 +4,23 @@
 
 Данный микросервис предоставляет функционал для работы с пользователями от лица администратора.
 
-## UserController (8083/api/v1/admin)
+## Доступ
+
+Роли:
+
+- ADMIN
+
+## Swagger
+
+http://localhost:8083/api/doc/swagger-ui/index.html#/
+
+## Порт
+
+```text
+8083
+```
+
+## UserController
 
 Все операции подтягиваются с user-service с помощью feign-client
 

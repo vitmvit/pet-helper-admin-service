@@ -4,10 +4,8 @@ import by.vitikova.discovery.UserDto;
 import by.vitikova.discovery.constant.RoleName;
 import by.vitikova.discovery.create.UserCreateDto;
 import by.vitikova.discovery.update.PasswordUpdateDto;
-import by.vitikova.discovery.update.UserUpdateDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,15 +68,6 @@ public interface UserClient {
      */
     @PostMapping
     ResponseEntity<UserDto> create(@RequestBody UserCreateDto userCreateDto);
-
-//    /**
-//     * Обновляет данные пользователя.
-//     *
-//     * @param userUpdateDto объект UserUpdateDto, содержащий обновленные данные пользователя
-//     * @return объект ResponseEntity со статусом ответа и обновленным пользователем в теле ответа
-//     */
-//    @PutMapping
-//    ResponseEntity<UserDto> update(@RequestBody UserUpdateDto userUpdateDto);
 
     /**
      * Обновляет пароль пользователя.

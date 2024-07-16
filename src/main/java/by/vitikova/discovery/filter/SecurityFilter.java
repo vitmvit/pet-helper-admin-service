@@ -44,6 +44,12 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain){
         try {
+            // Проверяем, является ли запрос запросом на Swagger UI
+            if (request.getRequestURI().contains("/swagger-ui") || request.getRequestURI().contains("/api/doc") || request.getRequestURI().contains("/v3/api-docs")) {
+                // Если да, пропускаем фильтр и передаем запрос дальше
+                filterChain.doFilter(request, response);
+                return;
+            }
             var token = this.recoverToken(request);
             var login = getUsername(token);
             User user = userConverter.convert(userService.findByLogin(login));

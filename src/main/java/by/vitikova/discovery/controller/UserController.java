@@ -1,11 +1,10 @@
 package by.vitikova.discovery.controller;
 
 import by.vitikova.discovery.UserDto;
+import by.vitikova.discovery.auth.SignUpCreateDto;
 import by.vitikova.discovery.constant.RoleName;
-import by.vitikova.discovery.create.UserCreateDto;
 import by.vitikova.discovery.service.UserService;
 import by.vitikova.discovery.update.PasswordUpdateDto;
-import by.vitikova.discovery.update.UserUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -45,18 +44,11 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> create(@RequestBody UserCreateDto userCreateDto) {
+    public ResponseEntity<UserDto> create(@RequestBody SignUpCreateDto userCreateDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.create(userCreateDto));
     }
-
-//    @PutMapping
-//    public ResponseEntity<UserDto> update(@RequestBody UserUpdateDto houseUpdateDto) {
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(userService.update(houseUpdateDto));
-//    }
 
     @PutMapping("/password")
     public ResponseEntity<UserDto> updatePassword(@RequestBody PasswordUpdateDto dto) {
